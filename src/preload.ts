@@ -4,6 +4,8 @@ import { contextBridge, ipcRenderer } from "electron";
 
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 contextBridge.exposeInMainWorld("nativeAPI", {
-  invokeNativeAPI: (channel: string, message: any) =>
-    ipcRenderer.invoke(channel, message),
+  invokeNativeAPI: (channel: string, ...message: any[]) =>
+    ipcRenderer.invoke(channel, ...message),
+  nativeAPICallback: (channel: string, cb: (event: Electron.IpcRendererEvent, ...args: any[]) => void) =>
+    ipcRenderer.on(channel, (event, ...args) => cb(event, ...args)),
 });
