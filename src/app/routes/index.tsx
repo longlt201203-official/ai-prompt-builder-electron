@@ -54,7 +54,11 @@ function Index() {
         setError(String(args?.[0] ?? "Unknown error"));
       }
     };
-    nativeAPI.nativeAPICallback(NATIVE_API_GENERATE_PROMPT, cb);
+    const dispose = nativeAPI.nativeAPICallback(NATIVE_API_GENERATE_PROMPT, cb);
+
+    return () => {
+      dispose();
+    }
   }, []);
 
   // Auto-scroll output

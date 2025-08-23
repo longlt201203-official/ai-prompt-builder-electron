@@ -6,6 +6,8 @@ import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld("nativeAPI", {
   invokeNativeAPI: (channel: string, ...message: any[]) =>
     ipcRenderer.invoke(channel, ...message),
-  nativeAPICallback: (channel: string, cb: (event: Electron.IpcRendererEvent, ...args: any[]) => void) =>
-    ipcRenderer.on(channel, (event, ...args) => cb(event, ...args)),
+  nativeAPICallback: (channel: string, cb: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+    ipcRenderer.on(channel, cb);
+    return () => ipcRenderer.removeListener(channel, cb)
+  },
 });
